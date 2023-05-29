@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Histogram</title>
+        <link rel="stylesheet" href="histogram.css">
+        <script src="calculate.js" defer></script>
+    </head>
+
+<body> 
+        <div id="boundsCont">
+        <h1>Lower Bounds</h1>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="max">Max</label>
+                <input type="text" id="max" name="max">
+            </div>
+            <p2 id="maxError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="aPlus">A+</label>
+                <input type="text" id="aPlus" name="aPlus">
+            </div>
+            <p2 id="aPlusError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="a">A</label>
+                <input type="text" id="a" name="a">
+            </div>
+            <p2 id="aError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="aMinus">A-</label>
+                <input type="text" id="aMinus" name="aMinus">
+            </div>
+            <p2 id="aMinusError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="bPlus">B+</label>
+                <input type="text" id="bPlus" name="bPlus">
+            </div>
+            <p2 id="bPlusError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="b">B</label>
+                <input type="text" id="b" name="b">
+            </div>
+            <p2 id="bError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="bMinus">B-</label>
+                <input type="text" id="bMinus" name="bMinus">
+            </div>
+            <p2 id="bMinusError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="cPlus">C+</label>
+                <input type="text" id="cPlus" name="cPlus">
+            </div>
+            <p2 id="cPlusError">Numbers 0 to 100</p2>    
+        </div>  
+        <div class="boundModule">
+            <div class="inputCont">
+                <label for="c">C</label>
+                <input type="text" id="c" name="c">
+            </div>
+            <p2 id="cError">Numbers 0 to 100</p2>    
+        </div>   
+        <div class="boundModule">
+            <div class="inputCont">
+            <label for="cMinus">C-</label>
+            <input type="text" id="cMinus" name="CMinus">
+            </div>
+            <p2 id="cMinusError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+            <label for="d">D</label>
+            <input type="text" id="d" name="d">
+            </div>
+            <p2 id="dError">Numbers 0 to 100</p2>    
+        </div>
+        <div class="boundModule">
+            <div class="inputCont">
+            <label for="f">F</label>
+            <input type="text" id="f" name="f">
+            </div>
+            <p2 id="fError">Numbers 0 to 100</p2>    
+        </div>
+    </div>
+    <div id="histColumn">
+        <div id="histogram">
+            <h1>Histogram</h1>
+            <div class="histCont">
+                <p>A+</p>
+                <p1 id="aPlusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>A</p>
+                <p1 id="aHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>A-</p>
+                <p1 id="aMinusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>B+</p>
+                <p1 id="bPlusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>B</p>
+                <p1 id="bHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>B-</p>
+                <p1 id="bMinusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>C+</p>
+                <p1 id="cPlusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>C</p>
+                <p1 id="cHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>C-</p>
+                <p1 id="cMinusHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>D</p>
+                <p1 id="dHist"></p1>
+            </div>
+            <div class="histCont">
+                <p>F</p>
+                <p1 id="fHist"></p1>
+            </div>
+        </div>
+        <div id="newGradeCont">
+            <div style="margin-bottom: -6px;">
+            <label for="newGrade">New Grade:</label>
+            <input type="text" id="newGradeInput" name="newGradeInput" placeholder="0 - 100">
+            <button id="submitButton">Submit</button>
+            </div>
+            <p3 id="newGradeError">Numbers 0 to 100</p3>    
+        </div>
+    </div>
+</body>
+
+
+
+
+</html>
