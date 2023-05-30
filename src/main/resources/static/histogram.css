@@ -124,11 +124,14 @@ p1 {
 }
 
 button {
-    margin-left: 10px;
+    margin-left: 5px;
     height: 30px;
+    border-radius: 2px;
+    border-width: 1px;
 }
 
 button:hover {
     background-color: #7a7574;
+    border-radius: 2px;
 }
 

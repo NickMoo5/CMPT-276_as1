@@ -59,6 +59,9 @@ const newGradeErrorId = "newGradeError"
 
 const newGradeId = "newGradeInput"
 
+const upperBound = "upperBound"
+const lowerBound = "lowerBound"
+
 const errorToId = {
     [maxId]: maxErrorId,
     [aPlusId]: aPlusErrorId,
@@ -75,8 +78,10 @@ const errorToId = {
     [newGradeId]: newGradeErrorId,
 }
 
+const maxBoundInc = 200.01
 const maxBound = 200.00;
 const minBound = 0.00;
+const minBoundInc = -0.01
 
 const boundsModel = {
     [maxId]: maxDefault,
@@ -93,7 +98,23 @@ const boundsModel = {
     [fId]: fDefault,
 }
 
+var boundsLimits = {
+    [maxId]:    {[upperBound]: maxBoundInc,             [lowerBound]: boundsModel[aPlusId]},
+    [aPlusId]:  {[upperBound]: boundsModel[maxId],      [lowerBound]: boundsModel[aId]},
+    [aId]:      {[upperBound]: boundsModel[aPlusId],    [lowerBound]: boundsModel[aMinusId]},
+    [aMinusId]: {[upperBound]: boundsModel[aId],        [lowerBound]: boundsModel[bPlusId]},
+    [bPlusId]:  {[upperBound]: boundsModel[aMinusId],   [lowerBound]: boundsModel[bId]},
+    [bId]:      {[upperBound]: boundsModel[bPlusId],    [lowerBound]: boundsModel[bMinusId]},
+    [bMinusId]: {[upperBound]: boundsModel[bId],        [lowerBound]: boundsModel[cPlusId]},
+    [cPlusId]:  {[upperBound]: boundsModel[bMinusId],   [lowerBound]: boundsModel[cId]},
+    [cId]:      {[upperBound]: boundsModel[cPlusId],    [lowerBound]: boundsModel[cMinusId]},
+    [cMinusId]: {[upperBound]: boundsModel[cId],        [lowerBound]: boundsModel[dId]},
+    [dId]:      {[upperBound]: boundsModel[cMinusId],   [lowerBound]: boundsModel[fId]},
+    [fId]:      {[upperBound]: boundsModel[dId],        [lowerBound]: minBoundInc},
+}
+
 var numRangeErrorMsg = "Numbers " + minBound + " to " + maxBound
+const boundsErrorMsg = "Invalid Bound"
 
 var gradesModel =  [65.95, 56.98, 78.62, 96.1, 90.3, 72.24, 92.34, 60.00, 81.43, 86.22, 88.33, 9.03,
     49.93, 52.34, 53.11, 50.10, 88.88, 55.32, 55.69, 61.68, 70.44, 70.54, 90.0, 71.11, 80.01]
@@ -128,6 +149,23 @@ const histNameToId = {
 
 var allInputsValidated = true
 
+function updateBoundsLimits() {
+    boundsLimits = {
+        [maxId]:    {[upperBound]: maxBoundInc,             [lowerBound]: boundsModel[aPlusId]},
+        [aPlusId]:  {[upperBound]: boundsModel[maxId],      [lowerBound]: boundsModel[aId]},
+        [aId]:      {[upperBound]: boundsModel[aPlusId],    [lowerBound]: boundsModel[aMinusId]},
+        [aMinusId]: {[upperBound]: boundsModel[aId],        [lowerBound]: boundsModel[bPlusId]},
+        [bPlusId]:  {[upperBound]: boundsModel[aMinusId],   [lowerBound]: boundsModel[bId]},
+        [bId]:      {[upperBound]: boundsModel[bPlusId],    [lowerBound]: boundsModel[bMinusId]},
+        [bMinusId]: {[upperBound]: boundsModel[bId],        [lowerBound]: boundsModel[cPlusId]},
+        [cPlusId]:  {[upperBound]: boundsModel[bMinusId],   [lowerBound]: boundsModel[cId]},
+        [cId]:      {[upperBound]: boundsModel[cPlusId],    [lowerBound]: boundsModel[cMinusId]},
+        [cMinusId]: {[upperBound]: boundsModel[cId],        [lowerBound]: boundsModel[dId]},
+        [dId]:      {[upperBound]: boundsModel[cMinusId],   [lowerBound]: boundsModel[fId]},
+        [fId]:      {[upperBound]: boundsModel[dId],        [lowerBound]: minBoundInc},
+    }
+}
+
 function clearHistModel() {
     for (const key in histModel) {
         histModel[key] = 0
@@ -147,14 +185,11 @@ function updateHistGraphics() {
         }
         histograms.textContent = histString
     })
-    console.log("Counter: " + counter)
 }
 
 function updateHistogram() {
     clearHistModel()
-    console.log(gradesModel)
-    console.log(gradesModel.length)
-    if (gradesModel) {
+    if (gradesModel && allInputsValidated == true) {
         gradesModel.forEach(function(sortedGrades) {
             if (sortedGrades >= boundsModel[aPlusId]) {
                 histModel[aPlusId] += 1
@@ -186,89 +221,6 @@ function updateHistogram() {
     updateHistGraphics()
 }
 
-function verifyBoundsValues() {
-    var retVal = true
-    updateBoundsModel()
-
-    inputBoundElements.forEach(function(inputBoundElements) {
-        inputBoundElements.style.borderColor = "initial"
-    })
-
-    if (boundsModel[maxId] <= boundsModel[aPlusId]) {
-        activateErrorMsg(errorToId[maxId], "Must be greater than A+ bound")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[maxId])
-    }
-    if (boundsModel[aPlusId] >= boundsModel[maxId] || boundsModel[aPlusId] <= boundsModel[aId]) {
-        activateErrorMsg(errorToId[aPlusId], "Must be between Max and A bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[aPlusId])
-    } 
-    if (boundsModel[aId] >= boundsModel[aPlusId] || boundsModel[aId] <= boundsModel[aMinusId]) {
-        activateErrorMsg(errorToId[aId], "Must be between A+ and A- bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[aId])
-    } 
-    if (boundsModel[aMinusId] >= boundsModel[aId] || boundsModel[aMinusId] <= boundsModel[bPlusId]) {
-        activateErrorMsg(errorToId[aMinusId], "Must be between A and B+ bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[aMinusId])
-    } 
-    if (boundsModel[bPlusId] >= boundsModel[aMinusId] || boundsModel[bPlusId] <= boundsModel[bId]) {
-        activateErrorMsg(errorToId[bPlusId], "Must be between A- and B bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[bPlusId])
-    } 
-    if (boundsModel[bId] >= boundsModel[bPlusId] || boundsModel[bId] <= boundsModel[bMinusId]) {
-        activateErrorMsg(errorToId[bId], "Must be between B+ and B- bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[bId])
-    } 
-    if (boundsModel[bMinusId] >= boundsModel[bId] || boundsModel[bMinusId] <= boundsModel[cPlusId]) {
-        activateErrorMsg(errorToId[bMinusId], "Must be between B and C+ bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[bMinusId])
-    } 
-    if (boundsModel[cPlusId] >= boundsModel[bMinusId] || boundsModel[cPlusId] <= boundsModel[cId]) {
-        activateErrorMsg(errorToId[cPlusId], "Must be between B- and C bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[cPlusId])
-    } 
-    if (boundsModel[cId] >= boundsModel[cPlusId] || boundsModel[cId] <= boundsModel[cMinusId]) {
-        activateErrorMsg(errorToId[cId], "Must be between C+ and C- bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[cId])
-    } 
-    if (boundsModel[cMinusId] >= boundsModel[cId] || boundsModel[cMinusId] <= boundsModel[dId]) {
-        activateErrorMsg(errorToId[cMinusId], "Must be between C and D bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[cMinusId])
-    } 
-    if (boundsModel[dId] >= boundsModel[cMinusId] || boundsModel[dId] <= boundsModel[fId]) {
-        activateErrorMsg(errorToId[dId], "Must be between C- and F bounds")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[dId])
-    } 
-    if (boundsModel[fId] >= boundsModel[dId]) {
-        activateErrorMsg(errorToId[fId], "Must be less than D bound")
-        retVal = false
-    } else {
-        disableErrorMsg(errorToId[fId])
-    } 
-    return retVal
-}
-
 function activateErrorMsg(id, msg) {
     var element = document.getElementById(id)
     element.innerHTML = msg
@@ -283,23 +235,65 @@ function disableErrorMsg(id) {
 function validateInputRange(input) {
     var validated = true
     var value = input.value
-    input.style.borderColor = "initial";
+    updateBoundsModel()
+    console.log(boundsModel)
+    var upper = boundsLimits[input.id][upperBound]
+    var lower = boundsLimits[input.id][lowerBound]
 
     if (isNaN(value) || value == '' || value > maxBound || value < minBound) {
         validated = false
         input.style.borderColor = "red"
         activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
-    } else if (!verifyBoundsValues()) {
-        validated = false
-        input.style.borderColor = "red"
-    } else {
-        input.style.borderColor = "initial";
-        disableErrorMsg(errorToId[input.id])
+        //allInputsValidated = validated
+        //return
+        //verifyBoundsValues()
+        return
+    }
+    //} else if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
+        //validated = false
+        //input.style.borderColor = "red"
+        //activateErrorMsg(errorToId[input.id], boundsErrorMsg)
+    updateBoundsModel()
+    if (moo()){
         updateBoundsModel()
         updateHistogram()
         setNewGradeDefaults()
     }
+    
+        
+        //input.style.borderColor = "";
+        //disableErrorMsg(errorToId[input.id])
+
+    
     allInputsValidated = validated
+}
+
+function moo() {
+    var validated = true
+    inputBoundElements.forEach(function(inputBoundElements) {
+        let upper = boundsLimits[inputBoundElements.id][upperBound]
+        let lower = boundsLimits[inputBoundElements.id][lowerBound]
+        let value = inputBoundElements.value
+        console.log(value)
+        if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
+            validated = false
+            console.log("MOOOOOO")
+            inputBoundElements.style.borderColor = "red"
+            activateErrorMsg(errorToId[inputBoundElements.id], boundsErrorMsg)
+        } else {
+            disableErrorMsg(errorToId[inputBoundElements.id])
+            inputBoundElements.style.borderColor = ""
+        }
+        console.log("MOOOOOOOOOOOOOOOOOOO")
+    })
+    return validated
+}
+
+function validateInputRangeWrapper() {
+    console.log("Moo")
+    inputBoundElements.forEach(function(inputBoundElements) {
+        validateInputRange(inputBoundElements)
+    })
 }
 
 function setInputBoxDefaults() {
@@ -317,6 +311,7 @@ function updateBoundsModel() {
         var value = inputBoundElements.value;
         boundsModel[id] = parseFloat(value);
     })
+    updateBoundsLimits()
     console.log(boundsModel)
 }
 
@@ -338,6 +333,10 @@ function setNewGradeDefaults() {
     newGradeTextBox.placeholder = "" + minBound + " - " + boundsModel[maxId]
 }
 
+setInputBoxDefaults()
+updateHistogram()
+setNewGradeDefaults()
+
 inputBoundElements.forEach(function(inputBoundElements) {
     inputBoundElements.addEventListener("input", validateInputRange.bind(null, inputBoundElements));
     inputBoundElements.addEventListener("blur", function(event) {
@@ -357,5 +356,4 @@ newGradeTextBox.addEventListener("keydown", function(event) {
 
 submitButton.addEventListener("click", submitEvent.bind(null, newGradeTextBox))
 
-setInputBoxDefaults()
-updateHistogram()
+
