@@ -113,6 +113,7 @@ const histNameToId = {
 }
 
 var numRangeErrorMsg = "Numbers " + minBound + " to " + maxBound
+var newGradeErrorMsg = "Numbers " + minBound + " to " + boundsModel[maxId]
 const boundsErrorMsg = "Invalid Bound"
 
 var boundsLimits = {
@@ -147,7 +148,8 @@ var histModel = {
     [fId]: 0,
 }
 
-var allInputsValidated = true
+var boundsValidated = true
+var newGradeValidated = true
 var histPercentIncrement = 20
 
 function updateBoundsLimits() {
@@ -195,7 +197,7 @@ function updateHistGraphics() {
 
 function updateHistogram() {
     clearHistModel()
-    if (gradesModel && allInputsValidated == true) {
+    if (gradesModel && boundsValidated == true) {
         gradesModel.forEach(function(sortedGrades) {
             if (sortedGrades >= boundsModel[aPlusId]) {
                 histModel[aPlusId] += 1
@@ -256,40 +258,47 @@ function validateNewGrade(input) {
     if (isNaN(value) || value == '' || value > parseFloat(boundsModel[maxId]) || value < parseFloat(boundsModel[fId])) {
         validated = false
         input.style.borderColor = "red"
-        console.log(value)
-        activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
+        activateErrorMsg(errorToId[input.id], newGradeErrorMsg)
     } else {
         input.style.borderColor = ""
         disableErrorMsg(errorToId[input.id])
     }
 
-    allInputsValidated = validated
+    newGradeValidated = validated
 }
 
 function validateInputRange(input) {
     var validated = true
     var value = input.value
     updateBoundsModel()
-    console.log(boundsModel)
     var upper = boundsLimits[input.id][upperBound]
     var lower = boundsLimits[input.id][lowerBound]
-
+/*
     if (isNaN(value) || value == '' || value > maxBound || value < minBound) {
         validated = false
         input.style.borderColor = "red"
         activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
-        allInputsValidated = validated
+        boundsValidated = validated
         return
     }
-
-    if (validateBounds()){
+*/
+    if (validateBoundss()){
         updateBoundsModel()
+        var maxB = boundsModel[maxId]
+        if (isNaN(maxB)) {
+            maxB = "Max Bound"
+        }
+        newGradeErrorMsg = "Numbers " + minBound + " to " + maxB
         setNewGradeDefaults()
+        if (newGradeTextBox.value != "") {
+            disableErrorMsg(errorToId[input.id])
+            validateNewGrade(newGradeTextBox)
+        }
     } else {
         validated = false
     }
 
-    allInputsValidated = validated
+    boundsValidated = validated
     updateHistogram()
 }
 
@@ -300,6 +309,30 @@ function validateBounds() {
         let lower = boundsLimits[inputBoundElements.id][lowerBound]
         let value = inputBoundElements.value
         if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
+            validated = false
+            inputBoundElements.style.borderColor = "red"
+            activateErrorMsg(errorToId[inputBoundElements.id], boundsErrorMsg)
+        } else {
+            disableErrorMsg(errorToId[inputBoundElements.id])
+            inputBoundElements.style.borderColor = ""
+        }
+    })
+    return validated
+}
+
+function validateBoundss() {
+    var validated = true
+    inputBoundElements.forEach(function(inputBoundElements) {
+        let upper = boundsLimits[inputBoundElements.id][upperBound]
+        let lower = boundsLimits[inputBoundElements.id][lowerBound]
+        let value = inputBoundElements.value
+
+        if (isNaN(value) || value == '' || value > maxBound || value < minBound) {
+            validated = false
+            inputBoundElements.style.borderColor = "red"
+            activateErrorMsg(errorToId[inputBoundElements.id], numRangeErrorMsg)
+            boundsValidated = validated
+        } else if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
             validated = false
             inputBoundElements.style.borderColor = "red"
             activateErrorMsg(errorToId[inputBoundElements.id], boundsErrorMsg)
@@ -331,10 +364,12 @@ function updateBoundsModel() {
 
 function submitEvent(input) {
     validateNewGrade(newGradeTextBox)
-    if (allInputsValidated == true) {
+    if (newGradeValidated == true && boundsValidated == true) {
         gradesModel.push(parseFloat(input.value))
         input.value = null
         updateHistogram()
+    } else {
+        activateErrorMsg(errorToId[input.id], "Correct bounds before adding a new grade")
     }
 }
 
@@ -360,6 +395,14 @@ newGradeTextBox.addEventListener("input", validateNewGrade.bind(null, newGradeTe
 newGradeTextBox.addEventListener("keydown", function(event) {
     if (event.code == 'Enter') {
         submitEvent(newGradeTextBox)
+    }
+})
+newGradeTextBox.addEventListener("blur", function(event) {
+    console.log("Moo")
+    if (event.target.value == "") {
+        console.log("Moo")
+        event.target.style.borderColor = ""
+        disableErrorMsg(errorToId[event.target.id])
     }
 })
 
