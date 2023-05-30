@@ -98,6 +98,23 @@ const boundsModel = {
     [fId]: fDefault,
 }
 
+const histNameToId = {
+    [aPlusHistId]: aPlusId,
+    [aHistId]: aId,
+    [aMinusHistId]: aMinusId,
+    [bPlusHistId]: bPlusId,
+    [bHistId]: bId,
+    [bMinusHistId]: bMinusId,
+    [cPlusHistId]: cPlusId,
+    [cHistId]: cId,
+    [cMinusHistId]: cMinusId,
+    [dHistId]: dId,
+    [fHistId]: fId,
+}
+
+var numRangeErrorMsg = "Numbers " + minBound + " to " + maxBound
+const boundsErrorMsg = "Invalid Bound"
+
 var boundsLimits = {
     [maxId]:    {[upperBound]: maxBoundInc,             [lowerBound]: boundsModel[aPlusId]},
     [aPlusId]:  {[upperBound]: boundsModel[maxId],      [lowerBound]: boundsModel[aId]},
@@ -112,9 +129,6 @@ var boundsLimits = {
     [dId]:      {[upperBound]: boundsModel[cMinusId],   [lowerBound]: boundsModel[fId]},
     [fId]:      {[upperBound]: boundsModel[dId],        [lowerBound]: minBoundInc},
 }
-
-var numRangeErrorMsg = "Numbers " + minBound + " to " + maxBound
-const boundsErrorMsg = "Invalid Bound"
 
 var gradesModel =  [65.95, 56.98, 78.62, 96.1, 90.3, 72.24, 92.34, 60.00, 81.43, 86.22, 88.33, 9.03,
     49.93, 52.34, 53.11, 50.10, 88.88, 55.32, 55.69, 61.68, 70.44, 70.54, 90.0, 71.11, 80.01]
@@ -133,22 +147,7 @@ var histModel = {
     [fId]: 0,
 }
 
-const histNameToId = {
-    [aPlusHistId]: aPlusId,
-    [aHistId]: aId,
-    [aMinusHistId]: aMinusId,
-    [bPlusHistId]: bPlusId,
-    [bHistId]: bId,
-    [bMinusHistId]: bMinusId,
-    [cPlusHistId]: cPlusId,
-    [cHistId]: cId,
-    [cMinusHistId]: cMinusId,
-    [dHistId]: dId,
-    [fHistId]: fId,
-}
-
 var allInputsValidated = true
-
 var histPercentIncrement = 20
 
 function updateBoundsLimits() {
@@ -279,27 +278,17 @@ function validateInputRange(input) {
         validated = false
         input.style.borderColor = "red"
         activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
-        //allInputsValidated = validated
-        //return
-        //verifyBoundsValues()
         allInputsValidated = validated
         return
     }
-    //} else if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
-        //validated = false
-        //input.style.borderColor = "red"
-        //activateErrorMsg(errorToId[input.id], boundsErrorMsg)
-    updateBoundsModel()
+
     if (validateBounds()){
         updateBoundsModel()
         setNewGradeDefaults()
     } else {
         validated = false
     }
-        //input.style.borderColor = "";
-        //disableErrorMsg(errorToId[input.id])
 
-    
     allInputsValidated = validated
     updateHistogram()
 }
@@ -347,11 +336,6 @@ function submitEvent(input) {
         input.value = null
         updateHistogram()
     }
-
-}
-
-function clearGradesModel(input) {
-    gradesModel = []
 }
 
 function setNewGradeDefaults() {
