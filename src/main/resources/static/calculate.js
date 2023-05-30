@@ -149,6 +149,8 @@ const histNameToId = {
 
 var allInputsValidated = true
 
+var histPercentIncrement = 20
+
 function updateBoundsLimits() {
     boundsLimits = {
         [maxId]:    {[upperBound]: maxBoundInc,             [lowerBound]: boundsModel[aPlusId]},
@@ -173,17 +175,22 @@ function clearHistModel() {
 }
 
 function updateHistGraphics() {
-    var counter = 0
+    var max = getMaxHist()
+    while (max*histPercentIncrement > 100) {
+        histPercentIncrement--
+    }
+
     histograms.forEach(function(histograms) {
         var id = histograms.id
-        var numZeroes = histModel[histNameToId[id]]
-        var histString = ""
-
-        for (let i = 0; i < numZeroes; i++) {
-            histString += "O"
-            counter++
+        var numPercent = histModel[histNameToId[id]]*histPercentIncrement
+        if (numPercent == 0) {
+            histograms.style.display = "none"
+        } else {
+            histograms.style.display = "block"
+            var widthStr = numPercent + "%"
+            histograms.style.width = widthStr
+            histograms.textContent = histModel[histNameToId[id]]
         }
-        histograms.textContent = histString
     })
 }
 
@@ -221,6 +228,17 @@ function updateHistogram() {
     updateHistGraphics()
 }
 
+function getMaxHist() {
+    var max = 0
+    max = histModel[aPlusId]
+    for (const key in histModel) {
+        if (histModel[key] > max) {
+            max = histModel[key]
+        }
+    }
+    return max
+}
+
 function activateErrorMsg(id, msg) {
     var element = document.getElementById(id)
     element.innerHTML = msg
@@ -230,6 +248,23 @@ function activateErrorMsg(id, msg) {
 function disableErrorMsg(id) {
     var element = document.getElementById(id)
     element.style.display = "none"
+}
+
+function validateNewGrade(input) {
+    var validated = true
+    var value = input.value
+
+    if (isNaN(value) || value == '' || value > parseFloat(boundsModel[maxId]) || value < parseFloat(boundsModel[fId])) {
+        validated = false
+        input.style.borderColor = "red"
+        console.log(value)
+        activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
+    } else {
+        input.style.borderColor = ""
+        disableErrorMsg(errorToId[input.id])
+    }
+
+    allInputsValidated = validated
 }
 
 function validateInputRange(input) {
@@ -247,6 +282,7 @@ function validateInputRange(input) {
         //allInputsValidated = validated
         //return
         //verifyBoundsValues()
+        allInputsValidated = validated
         return
     }
     //} else if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
@@ -254,46 +290,36 @@ function validateInputRange(input) {
         //input.style.borderColor = "red"
         //activateErrorMsg(errorToId[input.id], boundsErrorMsg)
     updateBoundsModel()
-    if (moo()){
+    if (validateBounds()){
         updateBoundsModel()
-        updateHistogram()
         setNewGradeDefaults()
+    } else {
+        validated = false
     }
-    
-        
         //input.style.borderColor = "";
         //disableErrorMsg(errorToId[input.id])
 
     
     allInputsValidated = validated
+    updateHistogram()
 }
 
-function moo() {
+function validateBounds() {
     var validated = true
     inputBoundElements.forEach(function(inputBoundElements) {
         let upper = boundsLimits[inputBoundElements.id][upperBound]
         let lower = boundsLimits[inputBoundElements.id][lowerBound]
         let value = inputBoundElements.value
-        console.log(value)
         if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
             validated = false
-            console.log("MOOOOOO")
             inputBoundElements.style.borderColor = "red"
             activateErrorMsg(errorToId[inputBoundElements.id], boundsErrorMsg)
         } else {
             disableErrorMsg(errorToId[inputBoundElements.id])
             inputBoundElements.style.borderColor = ""
         }
-        console.log("MOOOOOOOOOOOOOOOOOOO")
     })
     return validated
-}
-
-function validateInputRangeWrapper() {
-    console.log("Moo")
-    inputBoundElements.forEach(function(inputBoundElements) {
-        validateInputRange(inputBoundElements)
-    })
 }
 
 function setInputBoxDefaults() {
@@ -312,13 +338,12 @@ function updateBoundsModel() {
         boundsModel[id] = parseFloat(value);
     })
     updateBoundsLimits()
-    console.log(boundsModel)
 }
 
 function submitEvent(input) {
-    validateInputRange(newGradeTextBox)
+    validateNewGrade(newGradeTextBox)
     if (allInputsValidated == true) {
-        gradesModel.push(parseInt(input.value))
+        gradesModel.push(parseFloat(input.value))
         input.value = null
         updateHistogram()
     }
@@ -347,7 +372,7 @@ inputBoundElements.forEach(function(inputBoundElements) {
     })
 });
 
-newGradeTextBox.addEventListener("input", validateInputRange.bind(null, newGradeTextBox));
+newGradeTextBox.addEventListener("input", validateNewGrade.bind(null, newGradeTextBox));
 newGradeTextBox.addEventListener("keydown", function(event) {
     if (event.code == 'Enter') {
         submitEvent(newGradeTextBox)

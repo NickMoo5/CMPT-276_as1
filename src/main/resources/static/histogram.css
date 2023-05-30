@@ -87,29 +87,42 @@ input {
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: min-content;
+    width: 280px;
 }
 
 p {
     font-size: 13px;
-    width: 130px;
+    width: 100px;
     height: 10px;
     padding-left: 20px;
+    padding-bottom: 2px;
     display: inline;
+    float: left;
     margin:6px;
 }
 
-p1 {
-    font-size: 13px;
-    width: 140px;
+.histBar {
+    width: 100%;
     height: 13px;
-    display: inline;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+p1 {
+    font-size: 11px;
+    width: 50%;
+    height: 13px;
+    float: left;
+    text-align: right;
     margin:0px;
-    overflow: hidden;
+    background-color: #b5151c;
+    color: white;
+    padding-right: 2px;
 }
 
 #newGradeCont {
-    height: 188px;
+    height: 166px;
     border-radius: 2px;
     background-color: #e9eff1;
     padding-left: 15px;
