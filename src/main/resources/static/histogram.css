@@ -119,6 +119,7 @@ p1 {
     background-color: #b5151c;
     color: white;
     padding-right: 2px;
+    border-radius: 3px;
 }
 
 #newGradeCont {
