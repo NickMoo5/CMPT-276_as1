@@ -277,10 +277,14 @@ function validateInputRange(input) {
     if (validateBounds()){
         updateBoundsModel()
         var maxB = boundsModel[maxId]
+        var minB = boundsModel[fId]
         if (isNaN(maxB)) {
             maxB = "Max Bound"
         }
-        newGradeErrorMsg = "Numbers " + minBound + " to " + maxB
+        if (isNaN(minB)) {
+            maxB = "Min Bound"
+        }
+        newGradeErrorMsg = "Numbers " + minB + " to " + maxB
         setNewGradeDefaults()
         if (newGradeTextBox.value != "") {
             disableErrorMsg(errorToId[input.id])
