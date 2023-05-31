@@ -372,9 +372,7 @@ newGradeTextBox.addEventListener("keydown", function(event) {
     }
 })
 newGradeTextBox.addEventListener("blur", function(event) {
-    console.log("Moo")
     if (event.target.value == "") {
-        console.log("Moo")
         event.target.style.borderColor = ""
         disableErrorMsg(errorToId[event.target.id])
     }
