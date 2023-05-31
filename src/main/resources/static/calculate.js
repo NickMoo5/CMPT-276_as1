@@ -273,16 +273,8 @@ function validateInputRange(input) {
     updateBoundsModel()
     var upper = boundsLimits[input.id][upperBound]
     var lower = boundsLimits[input.id][lowerBound]
-/*
-    if (isNaN(value) || value == '' || value > maxBound || value < minBound) {
-        validated = false
-        input.style.borderColor = "red"
-        activateErrorMsg(errorToId[input.id], numRangeErrorMsg)
-        boundsValidated = validated
-        return
-    }
-*/
-    if (validateBoundss()){
+
+    if (validateBounds()){
         updateBoundsModel()
         var maxB = boundsModel[maxId]
         if (isNaN(maxB)) {
@@ -303,24 +295,6 @@ function validateInputRange(input) {
 }
 
 function validateBounds() {
-    var validated = true
-    inputBoundElements.forEach(function(inputBoundElements) {
-        let upper = boundsLimits[inputBoundElements.id][upperBound]
-        let lower = boundsLimits[inputBoundElements.id][lowerBound]
-        let value = inputBoundElements.value
-        if (parseFloat(value) >= upper || parseFloat(value) <= lower) {
-            validated = false
-            inputBoundElements.style.borderColor = "red"
-            activateErrorMsg(errorToId[inputBoundElements.id], boundsErrorMsg)
-        } else {
-            disableErrorMsg(errorToId[inputBoundElements.id])
-            inputBoundElements.style.borderColor = ""
-        }
-    })
-    return validated
-}
-
-function validateBoundss() {
     var validated = true
     inputBoundElements.forEach(function(inputBoundElements) {
         let upper = boundsLimits[inputBoundElements.id][upperBound]
