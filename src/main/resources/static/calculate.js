@@ -348,7 +348,7 @@ function submitEvent(input) {
 }
 
 function setNewGradeDefaults() {
-    newGradeTextBox.placeholder = "" + minBound + " - " + boundsModel[maxId]
+    newGradeTextBox.placeholder = "" + boundsModel[fId] + " - " + boundsModel[maxId]
 }
 
 setInputBoxDefaults()
